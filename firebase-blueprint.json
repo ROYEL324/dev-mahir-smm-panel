@@ -1,0 +1,453 @@
+{
+  "entities": {
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Authorized administrator account mapping.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 256 },
+        "role": { "type": "string", "enum": ["super_admin", "admin", "moderator"] },
+        "grantedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "grantedBy", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Platform user profile, wallet balances, membership tier, and referral metrics.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "email": { "type": "string", "format": "email", "maxLength": 256 },
+        "photoURL": { "type": "string", "maxLength": 512 },
+        "walletBalance": { "type": "number" },
+        "totalDeposits": { "type": "number" },
+        "totalSpending": { "type": "number" },
+        "accountStatus": { "type": "string", "enum": ["active", "suspended"] },
+        "membershipLevel": { "type": "string", "enum": ["standard", "premium", "vip"] },
+        "referralCode": { "type": "string", "minLength": 4, "maxLength": 32, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "referredBy": { "type": "string", "maxLength": 128 },
+        "referralCount": { "type": "number" },
+        "referralEarnings": { "type": "number" },
+        "language": { "type": "string", "enum": ["en", "bn"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "email",
+        "photoURL",
+        "walletBalance",
+        "totalDeposits",
+        "totalSpending",
+        "accountStatus",
+        "membershipLevel",
+        "referralCode",
+        "referredBy",
+        "referralCount",
+        "referralEarnings",
+        "language",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ReferralCode": {
+      "title": "ReferralCode",
+      "description": "Publicly resolvable referral code to owner UID index without PII.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "minLength": 4, "maxLength": 32, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "ownerUid", "createdAt"]
+    },
+    "ServiceCategory": {
+      "title": "ServiceCategory",
+      "description": "SMM platform service category configured by administrators.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "platform": { "type": "string", "enum": ["Instagram", "Facebook", "YouTube", "TikTok", "Telegram", "X", "Other"] },
+        "sortOrder": { "type": "number" },
+        "enabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "platform", "sortOrder", "enabled", "createdAt", "updatedAt"]
+    },
+    "SmmService": {
+      "title": "SmmService",
+      "description": "Individual SMM service offering with pricing and limits.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "categoryId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "platform": { "type": "string", "enum": ["Instagram", "Facebook", "YouTube", "TikTok", "Telegram", "X", "Other"] },
+        "name": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "ratePer1000": { "type": "number" },
+        "minQty": { "type": "number" },
+        "maxQty": { "type": "number" },
+        "avgTime": { "type": "string", "maxLength": 80 },
+        "refillSupported": { "type": "boolean" },
+        "cancelSupported": { "type": "boolean" },
+        "providerId": { "type": "string", "maxLength": 128 },
+        "providerServiceId": { "type": "string", "maxLength": 128 },
+        "enabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "categoryId",
+        "platform",
+        "name",
+        "description",
+        "ratePer1000",
+        "minQty",
+        "maxQty",
+        "avgTime",
+        "refillSupported",
+        "cancelSupported",
+        "providerId",
+        "providerServiceId",
+        "enabled",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer SMM service order record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "serviceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "serviceName": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "platform": { "type": "string", "enum": ["Instagram", "Facebook", "YouTube", "TikTok", "Telegram", "X", "Other"] },
+        "targetUrl": { "type": "string", "minLength": 5, "maxLength": 512 },
+        "quantity": { "type": "number" },
+        "price": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "processing", "in_progress", "completed", "partial", "canceled", "failed"] },
+        "startCount": { "type": "number" },
+        "remains": { "type": "number" },
+        "providerId": { "type": "string", "maxLength": 128 },
+        "providerOrderId": { "type": "string", "maxLength": 128 },
+        "transactionId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "serviceId",
+        "serviceName",
+        "platform",
+        "targetUrl",
+        "quantity",
+        "price",
+        "status",
+        "startCount",
+        "remains",
+        "providerId",
+        "providerOrderId",
+        "transactionId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Immutable wallet and referral ledger entry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "type": { "type": "string", "enum": ["order_debit", "deposit_credit", "refund_credit", "referral_bonus", "admin_adjustment", "withdrawal_debit"] },
+        "amount": { "type": "number" },
+        "balanceAfter": { "type": "number" },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "referenceId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "type", "amount", "balanceAfter", "description", "referenceId", "createdAt"]
+    },
+    "Deposit": {
+      "title": "Deposit",
+      "description": "Add funds payment claim awaiting verified gateway or admin confirmation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userEmail": { "type": "string", "format": "email", "maxLength": 256 },
+        "userName": { "type": "string", "maxLength": 80 },
+        "method": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "amount": { "type": "number" },
+        "senderNumber": { "type": "string", "minLength": 4, "maxLength": 64 },
+        "transactionRef": { "type": "string", "minLength": 4, "maxLength": 128 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "adminNote": { "type": "string", "maxLength": 300 },
+        "reviewedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "userEmail",
+        "userName",
+        "method",
+        "amount",
+        "senderNumber",
+        "transactionRef",
+        "status",
+        "adminNote",
+        "reviewedBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal",
+      "description": "User withdrawal request for referral or wallet funds when enabled.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userEmail": { "type": "string", "format": "email", "maxLength": 256 },
+        "method": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "accountDetails": { "type": "string", "minLength": 4, "maxLength": 128 },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "reviewedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "userEmail", "method", "accountDetails", "amount", "status", "reviewedBy", "createdAt", "updatedAt"]
+    },
+    "Referral": {
+      "title": "Referral",
+      "description": "Referral attribution record keyed by referred user UID to prevent duplicates.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "referrerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "referredUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "referredEmail": { "type": "string", "format": "email", "maxLength": 256 },
+        "rewardAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["registered", "rewarded"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "referrerUid", "referredUid", "referredEmail", "rewardAmount", "status", "createdAt"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Customer support ticket and administrator response.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userEmail": { "type": "string", "format": "email", "maxLength": 256 },
+        "subject": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "category": { "type": "string", "enum": ["order", "payment", "service", "account", "other"] },
+        "orderId": { "type": "string", "maxLength": 128 },
+        "message": { "type": "string", "minLength": 5, "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["open", "answered", "closed"] },
+        "priority": { "type": "string", "enum": ["normal", "high", "urgent"] },
+        "adminReply": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "userEmail",
+        "subject",
+        "category",
+        "orderId",
+        "message",
+        "status",
+        "priority",
+        "adminReply",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Platform broadcast or targeted user notification.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "message": { "type": "string", "minLength": 2, "maxLength": 600 },
+        "type": { "type": "string", "enum": ["info", "success", "warning"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "title", "message", "type", "read", "createdAt"]
+    },
+    "PlatformSettings": {
+      "title": "PlatformSettings",
+      "description": "Global platform, banner, and payment configuration managed by administrators.",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "defaultCurrency": { "type": "string", "enum": ["BDT", "USD", "EUR"] },
+        "usdRate": { "type": "number" },
+        "eurRate": { "type": "number" },
+        "referralEnabled": { "type": "boolean" },
+        "referralRewardPercent": { "type": "number" },
+        "minDeposit": { "type": "number" },
+        "withdrawalEnabled": { "type": "boolean" },
+        "bkashEnabled": { "type": "boolean" },
+        "bkashNumber": { "type": "string", "maxLength": 32 },
+        "bkashInstructions": { "type": "string", "maxLength": 400 },
+        "nagadEnabled": { "type": "boolean" },
+        "nagadNumber": { "type": "string", "maxLength": 32 },
+        "nagadInstructions": { "type": "string", "maxLength": 400 },
+        "supportOnline": { "type": "boolean" },
+        "supportHours": { "type": "string", "maxLength": 80 },
+        "supportTelegramUrl": { "type": "string", "maxLength": 300 },
+        "supportEmail": { "type": "string", "maxLength": 200 },
+        "heroKicker": { "type": "string", "maxLength": 140 },
+        "heroTitle": { "type": "string", "maxLength": 160 },
+        "heroSubtitle": { "type": "string", "maxLength": 400 },
+        "heroCtaText": { "type": "string", "maxLength": 60 },
+        "heroSecondaryCtaText": { "type": "string", "maxLength": 60 },
+        "heroBannerImageUrl": { "type": "string", "maxLength": 600 },
+        "promoBannerEnabled": { "type": "boolean" },
+        "promoBannerText": { "type": "string", "maxLength": 300 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "siteName",
+        "defaultCurrency",
+        "usdRate",
+        "eurRate",
+        "referralEnabled",
+        "referralRewardPercent",
+        "minDeposit",
+        "withdrawalEnabled",
+        "bkashEnabled",
+        "bkashNumber",
+        "bkashInstructions",
+        "nagadEnabled",
+        "nagadNumber",
+        "nagadInstructions",
+        "supportOnline",
+        "supportHours",
+        "supportTelegramUrl",
+        "supportEmail",
+        "heroKicker",
+        "heroTitle",
+        "heroSubtitle",
+        "heroCtaText",
+        "heroSecondaryCtaText",
+        "heroBannerImageUrl",
+        "promoBannerEnabled",
+        "promoBannerText",
+        "updatedAt"
+      ]
+    },
+    "ProviderConfig": {
+      "title": "ProviderConfig",
+      "description": "Non-secret metadata for external SMM provider API connections.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "apiUrl": { "type": "string", "maxLength": 300 },
+        "enabled": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["configured", "unconfigured", "error"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "apiUrl", "enabled", "status", "updatedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable log of sensitive administrator actions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "adminUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "adminEmail": { "type": "string", "format": "email", "maxLength": 256 },
+        "action": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "targetType": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "targetId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "adminUid", "adminEmail", "action", "targetType", "targetId", "details", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRole" },
+      "description": "Verified administrator role assignments."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles, balances, and referral totals."
+    },
+    "/referralCodes/{code}": {
+      "schema": { "$ref": "#/entities/ReferralCode" },
+      "description": "Referral code lookup without exposing user PII."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/ServiceCategory" },
+      "description": "Configured social media service categories."
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/SmmService" },
+      "description": "SMM services catalog with rates and quantity limits."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer SMM orders with server/DB-enforced pricing."
+    },
+    "/transactions/{txId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Immutable financial transaction ledger."
+    },
+    "/deposits/{depositId}": {
+      "schema": { "$ref": "#/entities/Deposit" },
+      "description": "User add-funds deposit claims awaiting verification."
+    },
+    "/withdrawals/{withdrawalId}": {
+      "schema": { "$ref": "#/entities/Withdrawal" },
+      "description": "Withdrawal requests."
+    },
+    "/referrals/{referralId}": {
+      "schema": { "$ref": "#/entities/Referral" },
+      "description": "Referral tracking keyed by referred user UID."
+    },
+    "/supportTickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/SupportTicket" },
+      "description": "Customer support tickets."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "Platform notifications."
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/PlatformSettings" },
+      "description": "Global platform configuration."
+    },
+    "/providerConfigs/{providerId}": {
+      "schema": { "$ref": "#/entities/ProviderConfig" },
+      "description": "External SMM provider metadata (no API secrets)."
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable admin audit logs."
+    }
+  }
+}

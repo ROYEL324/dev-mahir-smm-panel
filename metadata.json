@@ -1,0 +1,6 @@
+{
+  "name": "MAHIR DEV — SMM Panel",
+  "description": "Futuristic 3D Purple Luxury Social Media Marketing Services Panel with Firebase Authentication, Cloud Firestore, real-time order tracking, secure wallet & referral system, and protected Admin Console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
